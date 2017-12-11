@@ -8,6 +8,7 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_PLACE:
+    console.log('Add place')
       return {
         ...state,
         places: state.places.concat({
@@ -19,6 +20,7 @@ const reducer = (state = initialState, action) => {
         })
       };
     case DELETE_PLACE:
+    console.log('Delete place')
     if (state.selectedPlace) {
       return {
         ...state,
@@ -37,6 +39,7 @@ const reducer = (state = initialState, action) => {
         })
       }
     case DESELECT_PLACE:
+    console.log('deselect place')
       return {
         ...state,
         selectedPlace:null

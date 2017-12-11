@@ -1,19 +1,19 @@
 import { createStore, combineReducers, compose } from 'redux';
-import placesReducer from '../reducers/root';
+
+import placesReducer from './reducers/places';
 
 const rootReducer = combineReducers({
-  places: placesReducer,
-  selectedPlace: placesReducer
-})
+    places: placesReducer
+});
 
-let composEnhancers = compose;
+let composeEnhancers = compose;
 
 if (__DEV__) {
-  composEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+    composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 }
 
 const configureStore = () => {
-  return createStore(rootReducer, composEnhancers());
-}
+    return createStore(rootReducer, composeEnhancers());
+};
 
 export default configureStore;
