@@ -1,68 +1,41 @@
 import React from 'react';
 import {  StyleSheet, View} from 'react-native';
+import { connect } from 'react-redux';
+
+import { addPlace, deletePlace, selectPlace, deselectPlace } from './src/actions/index';
+
 import ListPlaces from './src/components/ListItem/ListPlaces';
 import InputPlace from './src/components/InputPlace';
 import PlaceDetails from './src/components/PlaceDetails';
-import Places from './src/dummy';
 
-export default class App extends React.Component {
-   state = {
-     placeName:'',
-     places:Places,
-     selectedPlace:null
-   }
+class App extends React.Component {
 
    placeSubmit = (place) => {
-     this.setState(prevState => {
-       return {
-         places: prevState.places.concat({
-           key: Math.random(),
-           name:place,
-           image: {
-             uri:'https://www.photo-paysage.com/albums/userpics/10001/normal_lac-paysage-montagne-pyrenees-14.jpg'
-           }
-         })
-       }
-     })
-   }
-   placeNameChange = (place) => {
-     this.setState({placeName:place})
-   }
+     this.props.onAddPlaces(place)
+  }
 
    onItemSelected = (key) => {
-     this.setState(prevState => {
-       return {
-         selectedPlace: prevState.places.find(place=> {
-           return place.key === key;
-         })
-       }
-     })
+     this.props.onSelectPlace(key);
    }
    onModalClose = () => {
-     this.setState({selectedPlace:null})
+     this.props.onDeselectPlace();
    }
+
    removeItem = () => {
-     this.setState(prevState => {
-       return {
-         places: prevState.places.filter((place)=>{
-           return place.key !== prevState.selectedPlace.key
-         }),
-         selectedPlace:null
-       }
-     })
+     this.props.onDeletePlace();
    }
 
   render() {
     return (
       <View style={styles.container}>
           <PlaceDetails
-            selectedPlace={this.state.selectedPlace}
+            selectedPlace={this.props.selectedPlace}
             onModalClose={this.onModalClose}
             onDeleteItem={this.removeItem}
           />
           <InputPlace placeSubmit={this.placeSubmit} />
           <ListPlaces
-            places={this.state.places}
+            places={this.props.places}
             onItemSelected={this.onItemSelected}/>
       </View>
     );
@@ -77,3 +50,21 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start'
   }
 });
+
+const mapStateToProps = (state) => {
+  return {
+    places: state.places.places,
+    selectedPlace: state.places.selectedPlace
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAddPlaces: (name) => dispatch(addPlace(name)),
+    onDeletePlace: () => dispatch(deletePlace()),
+    onSelectPlace: (key) => dispatch(selectPlace(key)),
+    onDeselectPlace: () => dispatch(deselectPlace())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
